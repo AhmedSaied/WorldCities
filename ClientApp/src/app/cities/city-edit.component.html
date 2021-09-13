@@ -1,0 +1,100 @@
+<div class="city-edit">
+    <h1>{{title}}</h1>
+
+    <p *ngIf="this.id && !city"><em>Loading...</em></p>
+
+    <div class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div *ngIf="form.invalid && form.errors && form.errors?.isDupeCity"
+                class="alert alert-danger">
+                <strong>ERROR</strong>:
+                A city with the same <i>name</i>, <i>lat</i>, <i>lon</i> and
+                <i>country</i> already exists.
+        </div>
+
+        <div class="form-group">
+            <label for="name">City name:</label>
+            <br/>
+            <input type="text" id="name" formControlName="name" required
+                placeholder="City name..." class="form-control" />
+            <div *ngIf="form.get('name').invalid && 
+                (form.get('name').dirty || form.get('name').touched)"
+                class="invalid-feedback">
+                <div *ngIf="form.get('name').errors?.required">Name is required</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name">City latitude:</label>
+            <br/>
+            <input type="text" id="lat" formControlName="lat" required
+                placeholder="Latitude..." class="form-control" />
+
+                <div *ngIf="form.get('lat').invalid && 
+                (form.get('lat').dirty || form.get('lat').touched)"
+                class="invalid-feedback">
+                <div *ngIf="form.get('lat').errors?.required">latitude is required</div>
+                <div *ngIf="form.get('lat').errors?.pattern">
+                    latitude requires a positive or negative number with 0-4 decimal values.
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="form-group">
+            <label for="name">City longitude:</label>
+            <br/>
+            <input type="text" id="lon" formControlName="lon" required
+                placeholder="Longitude..." class="form-control" />
+
+                <div *ngIf="form.get('lon').invalid && 
+                (form.get('lon').dirty || form.get('lon').touched)"
+                class="invalid-feedback">
+                <div *ngIf="form.get('lon').errors?.required">longitude is required</div>
+                <div *ngIf="form.get('lon').errors?.pattern">
+                    longitude requires a positive or negative number with 0-4 decimal values.
+                </div>
+            </div>
+        </div>
+
+        <mat-form-field *ngIf="countries">
+            <mat-label>select a country...</mat-label>
+            <mat-select id="countryId" formControlName="countryId">
+                <mat-option *ngFor="let item of countries" [value]="item.id"> 
+                    {{item.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="form.get('countryId').invalid && 
+                (form.get('countryId').dirty || form.get('countryId').touched)"
+                class="invalid-feedback">
+                <div *ngIf="form.get('countryId').errors?.required">Country is required</div>
+            </div>
+        <!-- <div class="form-group" *ngIf="countries">
+            <label for="name">Country:</label>
+            <br/>
+            <select id="countryId" class="form-control" 
+            formControlName="countryId">
+            <option value=""> --- select country ---</option>
+            <option *ngFor="let item of countries" [value]="item.id">
+                {{item.name}}
+            </option>
+        </select>
+        </div> -->
+
+        <div class="form-group commands">
+            <button *ngIf="id" type="submit" (click)="onSubmit()" class="btn btn-success"
+                [disabled]="form.invalid">
+                Save
+            </button>
+            <button *ngIf="!id" type="submit" (click)="onSubmit()" class="btn btn-success"
+                [disabled]="form.invalid">
+                Create
+            </button>
+            <button type="button" [routerLink]="['/cities']" class="btn">
+                Cancel
+            </button>
+        </div> 
+    </div>
+</div>
