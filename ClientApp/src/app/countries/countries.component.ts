@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import { MatTableDataSource} from '@angular/material/table';
 import { MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Country } from './country';
+import { CountryService } from './country.service';
+import { ApiResult } from '../base.service';
 
 @Component({
     selector: 'country',
@@ -29,8 +30,8 @@ export class CountriesComponent implements OnInit {
 
     filterTextChanged: Subject<string> = new Subject<string>();
 
-    constructor(private http:HttpClient, 
-        @Inject('BASE_URL') private baseUrl:string){ }
+    constructor(private countryService: CountryService){ }
+        //private http:HttpClient, @Inject('BASE_URL') private baseUrl:string
 
     ngOnInit() {
         this.loadData();
@@ -50,13 +51,12 @@ export class CountriesComponent implements OnInit {
                         this.sort.active : this.defaultSortColumn;
          var sortOrder: string= this.sort?
                          this.sort.direction: this.defaultSortOrder;
-         var url=this.baseUrl + 'api/Countries/'+event.pageIndex+'/'+
-                 event.pageSize+'/'+ sortColumn +'/'+ sortOrder;
 
-        if(this.filterQuery)
-            url=url + '/' + this.defaultFilterColumn + '/' + this.filterQuery;
+        var filterQuery=this.filterQuery? this.filterQuery: null;
+        var filterColumn= this.filterQuery? this.defaultFilterColumn: null;
 
-         this.http.get<any>(url)//, {params})
+         this.countryService.getData<ApiResult<Country>>(event.pageIndex,event.pageSize,
+            sortColumn, sortOrder, filterColumn, filterQuery)
          .subscribe(result=>{
              this.paginator.length=result.totalCount;
              this.paginator.pageIndex=result.pageIndex;

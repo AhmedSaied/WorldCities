@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+//import {HttpClient} from '@angular/common/http';
 import { ActivatedRoute, Router} from '@angular/router';
 import { FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn} from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -34,8 +34,8 @@ export class CityEditComponent extends BaseFormComponent
     countries: Country[];
 
     constructor(private activatedRoute: ActivatedRoute, private router:Router,
-        private http: HttpClient, private cityService: CityService) {
-            //@Inject('BASE_URL') private baseUrl: string
+        private cityService: CityService) {
+            //@Inject('BASE_URL') private baseUrl: string,private http: HttpClient, 
             super();
         }
 
@@ -61,7 +61,6 @@ export class CityEditComponent extends BaseFormComponent
             city.lon = this.form.get("lon").value;
             city.countryId = this.form.get("countryId").value;
             
-            //var url=this.baseUrl + "api/Cities/IsDupeCity";
             return this.cityService.isDupeCity(city).pipe(map(res=>{
                 return (res ? { isDupeCity: true} : null)
             }));
@@ -76,8 +75,7 @@ export class CityEditComponent extends BaseFormComponent
         this.id= +this.activatedRoute.snapshot.paramMap.get('id');
         if(this.id){
             //edit mode
-            //featch the city from the server
-            //var url=this.baseUrl + "api/Cities/" + this.id;
+            //fetch the city from the server
             this.cityService.get<City>(this.id).subscribe(result=>{
                 this.city=result;
                 this.title="Edit - "+this.city.name;
@@ -93,8 +91,8 @@ export class CityEditComponent extends BaseFormComponent
 
     loadCountries(){
         //featch all countries from server
-        //var url=this.baseUrl + 'api/Countries/0/9999/name/';
-        this.cityService.getCountries<ApiResult<Country>>(0,9999,"name",null,null,null).subscribe(result=>{
+        this.cityService.getCountries<ApiResult<Country>>(0,9999,"name",null,null,null)
+        .subscribe(result=>{
             this.countries = result.data;
         }, error=> console.error(error));
     }
@@ -108,7 +106,6 @@ export class CityEditComponent extends BaseFormComponent
 
         if(this.id){
             //edit mode
-            //var url=this.baseUrl + "api/Cities/" + this.city.id;
             this.cityService.put<City>(city).subscribe(res=>{
                 console.log("City "+ city.id + "has been updated.");
 
@@ -117,7 +114,6 @@ export class CityEditComponent extends BaseFormComponent
             }, error=> console.error(error));
         }else{
             //add mode
-            //var url=this.baseUrl + "api/Cities";
             this.cityService.post<City>(city).subscribe(result=>{
                 console.log("City "+ result.id + "has been created.");
 

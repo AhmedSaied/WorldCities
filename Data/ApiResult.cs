@@ -55,15 +55,15 @@ namespace WorldCities.Data
 
         #region Methods
         public static async Task<ApiResult<T>> CreateAsync(IQueryable<T> source,
-            int pageIndex,int pageSize, string sortColumn=null, string sortOrder=null,
-            string filterColumn=null, string filterQuery=null)
+            int pageIndex, int pageSize, string sortColumn = null, string sortOrder = null,
+            string filterColumn = null, string filterQuery = null)
         {
             if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterQuery)
                 && IsValidProperty(filterColumn))
                 source = source.Where(string.Format("{0}.Contains(@0)", filterColumn), filterQuery);
 
             var count = await source.CountAsync();
-            if(!string.IsNullOrEmpty(sortColumn) && IsValidProperty(sortColumn))
+            if (!string.IsNullOrEmpty(sortColumn) && IsValidProperty(sortColumn))
             {
                 sortOrder = !string.IsNullOrEmpty(sortOrder) && sortOrder.ToUpper() ==
                     "ASC" ? "ASC" : "DESC";
@@ -72,7 +72,11 @@ namespace WorldCities.Data
 
 
             source = source.Skip(pageIndex * pageSize).Take(pageSize);
-            var data = await source.ToListAsync();
+            #if DEBUG
+                //retrive sql query (for debug purposes)
+                var sql = source.ToParametrizedSql();
+            #endif
+        var data = await source.ToListAsync();
 
             return new ApiResult<T>(data, count, pageSize, pageIndex,
                 sortColumn, sortOrder, filterColumn, filterQuery);
