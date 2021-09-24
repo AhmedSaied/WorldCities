@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using WorldCities.Data.Models;
 
 namespace WorldCities
@@ -88,6 +89,7 @@ namespace WorldCities
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+            //app.UseSerilogRequestLogging();
         }
     }
 }

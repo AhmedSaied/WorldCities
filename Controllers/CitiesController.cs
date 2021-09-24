@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WorldCities.Data;
 using WorldCities.Data.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.Extensions.Logging;
 //using System.Reflection;
 
 namespace WorldCities.Controllers
@@ -17,6 +18,7 @@ namespace WorldCities.Controllers
     public class CitiesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        //public ILogger<CitiesController> _logger;
 
         public CitiesController(ApplicationDbContext context)
         {
@@ -30,6 +32,7 @@ namespace WorldCities.Controllers
             int pageIndex=0, int pageSize=10, string sortColumn=null,
             string sortOrder=null, string filterColumn=null, string filterQuery=null)
         {
+
             return await ApiResult<CityDTO>.CreateAsync(_context.Cities
                 .Include(a=>a.Country)
                 .Select(c=>new CityDTO
