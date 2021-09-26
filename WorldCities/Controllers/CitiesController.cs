@@ -105,18 +105,18 @@ namespace WorldCities.Controllers
 
         // DELETE: api/Cities/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(int id)
+        public async Task<bool> DeleteCity(int id)
         {
             var city = await _context.Cities.FindAsync(id);
             if (city == null)
             {
-                return NotFound();
+                return false;
             }
 
             _context.Cities.Remove(city);
-            await _context.SaveChangesAsync();
+            var executed=await _context.SaveChangesAsync();
 
-            return NoContent();
+            return executed > 0;
         }
 
         private bool CityExists(int id)
