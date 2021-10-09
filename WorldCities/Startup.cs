@@ -1,12 +1,12 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 using WorldCities.Data.Models;
 
 namespace WorldCities
@@ -39,6 +39,25 @@ namespace WorldCities
 
             services.AddDbContext<ApplicationDbContext>(options => 
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Add ASP.NET Core Identity support
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireLowercase = true;//at least one lowercase letter
+                options.Password.RequireUppercase = true;//at least uppercase letter
+                options.Password.RequireDigit = true;//at least one digit
+                options.Password.RequireNonAlphanumeric = true;// at least one non-alphanumeric character
+                options.Password.RequiredLength = 8;// a minimum length of eight characters
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +88,10 @@ namespace WorldCities
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
