@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
+import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 //import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -29,6 +31,7 @@ import { ReactiveFormsModule } from '@angular/forms'
     CountryEditComponent
   ],
   imports: [
+    ApiAuthorizationModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
@@ -36,7 +39,7 @@ import { ReactiveFormsModule } from '@angular/forms'
     BrowserAnimationsModule,
     AngularMaterialModule, ReactiveFormsModule
   ],
-  providers: [CityService, CountryService],
+  providers: [CityService, CountryService, { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

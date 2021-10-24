@@ -9,6 +9,7 @@ using WorldCities.Data;
 using WorldCities.Data.Models;
 using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 //using System.Reflection;
 
 namespace WorldCities.Controllers
@@ -63,6 +64,7 @@ namespace WorldCities.Controllers
 
         // PUT: api/Cities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCity(int id, City city)
         {
@@ -94,6 +96,7 @@ namespace WorldCities.Controllers
 
         // POST: api/Cities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<City>> PostCity(City city)
         {
@@ -104,6 +107,7 @@ namespace WorldCities.Controllers
         }
 
         // DELETE: api/Cities/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<bool> DeleteCity(int id)
         {
