@@ -6,4 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+   isOnline: boolean;
+  ngOnInit() {
+    this.isOnline=navigator.onLine;
+ }
 }
+function ngOnInit() {
+  
+}
+

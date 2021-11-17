@@ -20,7 +20,9 @@ import { CountryService } from './countries/country.service';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
-import { ReactiveFormsModule } from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment'
 
 
 @NgModule({
@@ -37,7 +39,12 @@ import { ReactiveFormsModule } from '@angular/forms'
     FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    AngularMaterialModule, ReactiveFormsModule
+    AngularMaterialModule, ReactiveFormsModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: environment.production,
+  // Register the ServiceWorker as soon as the app is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})
   ],
   providers: [CityService, CountryService, { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }],
   bootstrap: [AppComponent]

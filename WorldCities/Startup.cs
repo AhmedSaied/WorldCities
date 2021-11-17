@@ -79,10 +79,16 @@ namespace WorldCities
             {
                 OnPrepareResponse = (context) =>
                 {
-                    context.Context.Response.Headers["cache-control"] = Configuration["StaticFiles:Headers:Cache-Control"];
+                    if (context.File.Name.ToLower() == "isonline.txt") {
+                        //disable cashing for these files
+                        context.Context.Response.Headers.Add("Cache-Control", "no-cashe, no-store");
+                        context.Context.Response.Headers.Add("Expires", "-1");
+                    }
+                    else
+                        context.Context.Response.Headers["Cache-Control"] = Configuration["StaticFiles:Headers:Cache-Control"];
                 }
             });
-            if (!env.IsDevelopment())
+            //if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
             }
@@ -110,7 +116,7 @@ namespace WorldCities
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    //spa.UseAngularCliServer(npmScript: "start");
                 }
             });
             //app.UseSerilogRequestLogging();
